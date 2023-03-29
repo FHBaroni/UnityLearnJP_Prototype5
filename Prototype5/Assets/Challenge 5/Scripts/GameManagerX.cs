@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -10,19 +10,34 @@ public class GameManagerX : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI gameOverText;
     public GameObject titleScreen;
-    public Button restartButton; 
+    public Button restartButton;
 
     public List<GameObject> targetPrefabs;
+
+    CountdownTimer countdownTimer;
 
     private int score;
     private float spawnRate = 1.2f;
     public bool isGameActive;
 
-    private float spaceBetweenSquares = 2.5f; 
+    private float spaceBetweenSquares = 2.5f;
     private float minValueX = -3.75f; //  x value of the center of the left-most square
     private float minValueY = -3.75f; //  y value of the center of the bottom-most square
-    
-    // Start the game, remove title screen, reset score, and adjust spawnRate based on difficulty button clicked
+
+    void Start()
+    {
+        countdownTimer = GameObject.Find("Game Manager").GetComponent<CountdownTimer>();
+
+    }
+    private void Update()
+    {
+        if (isGameActive)
+        {
+            countdownTimer.timer();
+        }
+    }
+
+    //Start the game, remove title screen, reset score, and adjust spawnRate based on difficulty button clicked
     public void StartGame(int difficulty)
     {
         spawnRate /= difficulty;
@@ -45,7 +60,6 @@ public class GameManagerX : MonoBehaviour
             {
                 Instantiate(targetPrefabs[index], RandomSpawnPosition(), targetPrefabs[index].transform.rotation);
             }
-            
         }
     }
 

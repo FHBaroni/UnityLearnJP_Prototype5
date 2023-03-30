@@ -12,8 +12,6 @@ public class Target : MonoBehaviour
     private float xRange = 4;
     private float ySpawnPos = -1;
 
-
-
     public ParticleSystem explosionParticle;
     public int pointValue;
     void Start()
@@ -32,6 +30,10 @@ public class Target : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (gameManager.lives < 1)
+        {
+            gameManager.GameOver();
+        }
     }
      Vector3 RandomForce()
     {
@@ -49,23 +51,35 @@ public class Target : MonoBehaviour
         return new Vector3(Random.Range(-xRange, xRange), ySpawnPos);
     }
 
-    private void OnMouseDown()
-    {
-        if (gameManager.isGameActive)
-        {
-            gameManager.UpdateScore(pointValue);
-            Instantiate(explosionParticle, transform.position, explosionParticle.transform.rotation);
-            //Destroy(gameObject);
-        }
-    }
+    //private void OnMouseDown()
+    //{
+    //    if (gameManager.isGameActive && Time.timeScale  > 0)
+    //    {
+    //        gameManager.UpdateScore(pointValue);
+    //        Instantiate(explosionParticle, transform.position, explosionParticle.transform.rotation);
+    //        Destroy(gameObject);
+    //    }
+    //}
 
     private void OnTriggerEnter(Collider other)
     {
-       // Destroy(gameObject);
+        Destroy(gameObject);
 
         if (!gameObject.CompareTag("Bad"))
         {
-            gameManager.GameOver();
+            gameManager.lives--;
+            gameManager.UpdateLives();
+        }
+    }
+
+    public void DestroyTarget()
+    {
+        if (gameManager.isGameActive)
+        {
+            Destroy(gameObject);
+            Instantiate(explosionParticle, transform.position,
+            explosionParticle.transform.rotation);
+            gameManager.UpdateScore(pointValue);
         }
     }
 }
